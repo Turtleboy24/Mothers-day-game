@@ -127,16 +127,69 @@ document.addEventListener('DOMContentLoaded', () => {
         keys[e.code] = false;
     });
 
+    const joystickBase = document.getElementById('joystick-base');
+    const joystickThumb = document.getElementById('joystick-thumb');
+    const interactBtn = document.getElementById('interact-btn');
+
+    let joystickActive = false;
+    const joystickRadius = 55;
+    const mobileDirection = { x: 0, y: 0 };
+
+    function updateJoystickPosition(clientX, clientY) {
+        const rect = joystickBase.getBoundingClientRect();
+        const dx = clientX - (rect.left + rect.width / 2);
+        const dy = clientY - (rect.top + rect.height / 2);
+        const distance = Math.hypot(dx, dy);
+        const maxDistance = joystickRadius;
+        const angle = Math.atan2(dy, dx);
+        const limitedDistance = Math.min(distance, maxDistance);
+        const thumbX = Math.cos(angle) * limitedDistance;
+        const thumbY = Math.sin(angle) * limitedDistance;
+        joystickThumb.style.transform = `translate(calc(-50% + ${thumbX}px), calc(-50% + ${thumbY}px))`;
+        mobileDirection.x = limitedDistance > 10 ? Math.cos(angle) : 0;
+        mobileDirection.y = limitedDistance > 10 ? Math.sin(angle) : 0;
+    }
+
+    joystickBase.addEventListener('pointerdown', (event) => {
+        joystickActive = true;
+        joystickBase.setPointerCapture(event.pointerId);
+        updateJoystickPosition(event.clientX, event.clientY);
+    });
+
+    document.addEventListener('pointermove', (event) => {
+        if (!joystickActive) return;
+        updateJoystickPosition(event.clientX, event.clientY);
+    });
+
+    function resetJoystick() {
+        joystickActive = false;
+        joystickThumb.style.transform = 'translate(-50%, -50%)';
+        mobileDirection.x = 0;
+        mobileDirection.y = 0;
+    }
+
+    document.addEventListener('pointerup', resetJoystick);
+    document.addEventListener('pointercancel', resetJoystick);
+    interactBtn.addEventListener('click', interact);
     restartBtn.addEventListener('click', restart);
 
     function update() {
         if (gameState !== 'playing') return;
 
         // Movement
-        if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
-        if (keys['ArrowDown'] && player.y < canvas.height - player.height) player.y += player.speed;
-        if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-        if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+        if (keys['ArrowUp']) player.y -= player.speed;
+        if (keys['ArrowDown']) player.y += player.speed;
+        if (keys['ArrowLeft']) player.x -= player.speed;
+        if (keys['ArrowRight']) player.x += player.speed;
+        if (mobileDirection.x !== 0 || mobileDirection.y !== 0) {
+            player.x += mobileDirection.x * player.speed;
+            player.y += mobileDirection.y * player.speed;
+        }
+
+        if (player.x < 0) player.x = 0;
+        if (player.y < 0) player.y = 0;
+        if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+        if (player.y > canvas.height - player.height) player.y = canvas.height - player.height;
 
         // Check if all picked
         const pickedCount = plots.filter(p => p.state === 'picked').length;
