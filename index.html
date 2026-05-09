@@ -8,13 +8,19 @@
 </head>
 <body>
     <div id="instructions">
-        <p>Use arrow keys to move your character. Press SPACE near empty plots to plant roses, and near grown roses to pick them. Collect all 8 roses to unlock the pink house!</p>
+        <p>Use arrow keys or the touch joystick to move your character. Press SPACE on desktop or tap INTERACT on mobile near empty plots to plant roses, and near grown roses to pick them. Collect all 8 roses to unlock the pink house!</p>
     </div>
     <h1>Mother's Day Garden Adventure</h1>
     <canvas id="game-canvas" width="800" height="600"></canvas>
     <div id="ui">
         <p id="love-counter">Love received: 0</p>
         <p id="status">Plant some roses to start!</p>
+    </div>
+    <div id="mobile-controls">
+        <div id="joystick-base">
+            <div id="joystick-thumb"></div>
+        </div>
+        <button id="interact-btn">Interact</button>
     </div>
     <div id="house" style="display: none;">
         <h2>Happy Mother's Day!</h2>
