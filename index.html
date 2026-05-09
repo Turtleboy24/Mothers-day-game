@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mother's Day Garden Adventure</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="instructions">
+        <p>Use arrow keys to move your character. Press SPACE near empty plots to plant roses, and near grown roses to pick them. Collect all 8 roses to unlock the pink house!</p>
+    </div>
+    <h1>Mother's Day Garden Adventure</h1>
+    <canvas id="game-canvas" width="800" height="600"></canvas>
+    <div id="ui">
+        <p id="love-counter">Love received: 0</p>
+        <p id="status">Plant some roses to start!</p>
+    </div>
+    <div id="house" style="display: none;">
+        <h2>Happy Mother's Day!</h2>
+        <p>Dear Mom, thank you for all your love and care. You are the best mom in the world! 🌹❤️</p>
+        <button id="restart">Start Over</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
